@@ -13,4 +13,4 @@ def get_all_places():
         ]
         places.append(place)
 
-    return jsonify({"places": places}), 200
+    return jsonify({"data": places}), 200
