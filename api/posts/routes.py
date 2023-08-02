@@ -10,20 +10,20 @@ from users.routes import login_required, roles_required
 @app.post("/api/posts/create-post")
 @login_required
 def create_post():
-    place_id = request.json["place_id"]
+    business_id = request.json["business_id"]
     text = request.json["text"]
     user_id = session.get("user_id")
 
     new_post = {
         "_id": uuid.uuid4().hex,
         "user_id": user_id,
-        "place_id": place_id,
+        "business_id": business_id,
         "text": text,
         "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
     config.DB_POSTS.insert_one(new_post)
 
-    return jsonify({"id": new_post["_id"], "place_id": place_id}), 200
+    return jsonify({"id": new_post["_id"], "business_id": business_id}), 200
 
 
 @app.post("/api/posts/delete-post")

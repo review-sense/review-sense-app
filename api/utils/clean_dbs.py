@@ -6,10 +6,8 @@ from pymongo import MongoClient
 env = load_dotenv(".env.development")
 
 
-class Config:
+def clean():
     MONGO_DB_LOCAL = os.environ.get("MONGO_DB_LOCAL")
-    SECRET_KEY = os.environ.get("SECRET_KEY")
-    SESSION_TYPE = "filesystem"
 
     # Databases
     DB_USERS = MongoClient(MONGO_DB_LOCAL).engage_sense.users
@@ -17,5 +15,11 @@ class Config:
     DB_BUSINESSES = MongoClient(MONGO_DB_LOCAL).engage_sense.businesses
     DB_COMMENTS = MongoClient(MONGO_DB_LOCAL).engage_sense.comments
 
+    DB_USERS.drop()
+    DB_POSTS.drop()
+    DB_BUSINESSES.drop()
+    DB_COMMENTS.drop()
 
-config = Config()
+
+if __name__ == "__main__":
+    clean()
