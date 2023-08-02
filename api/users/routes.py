@@ -9,6 +9,7 @@ from flask import jsonify, request, session
 
 
 # Decorators
+# TODO: think about moving decorators
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -39,6 +40,10 @@ def roles_required(*role_names):
     return decorator
 
 
+from businesses.routes import *
+from posts.routes import *
+
+
 @app.get("/api/user/@me")
 @login_required
 @roles_required("business")
@@ -63,13 +68,24 @@ def register_user():
     if user is not None:
         return jsonify({"error": "User already exists"}), 409
 
-    new_user = {
-        "_id": uuid.uuid4().hex,
-        "email": email,
-        "password": hashed_password,
-        "role": role,
-        "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-    }
+    if role == "business":
+        new_user = {
+            "_id": uuid.uuid4().hex,
+            "email": email,
+            "password": hashed_password,
+            "role": role,
+            "title": "",
+            "description": "",
+            "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        }
+    else:
+        new_user = {
+            "_id": uuid.uuid4().hex,
+            "email": email,
+            "password": hashed_password,
+            "role": role,
+            "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        }
     config.DB_USERS.insert_one(new_user)
 
     return jsonify({"id": new_user["_id"], "email": new_user["email"]}), 200
@@ -99,4 +115,38 @@ def logout_user():
     return jsonify({"success": True}), 200
 
 
-from posts.routes import *
+@app.post("/api/user/follow")
+@login_required
+# TODO: add roles
+# @roles_required
+def follow_business():
+    user_id = session.get("user_id")
+    business_id = request.json.get("business_id")
+    role = request.json.get("role")
+    base_role = "viewer"
+
+    # get the user
+    user = config.DB_USERS.find_one({"_id": user_id})
+
+    # add business to the user's following list
+    follow_user = {"business_id": business_id, "role": base_role}
+
+    config.DB_USERS.update_one(
+        {"_id": user["_id"]}, {"$addToSet": {"following": follow_user}}
+    )
+
+    # add user to business's followers list
+    follow_business = {"user_id": user_id, "role": base_role}
+
+    config.DB_USERS.update_one(
+        {"_id": business_id}, {"$addToSet": {"followers": follow_business}}
+    )
+
+    if role != base_role:
+        # create a request for business
+        follow_request = {"user_id": user_id, "role": role}
+        config.DB_USERS.update_one(
+            {"_id": business_id}, {"$addToSet": {"follow_requests": follow_request}}
+        )
+
+    return jsonify({"success": True}), 200
