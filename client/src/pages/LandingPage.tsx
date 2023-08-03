@@ -29,31 +29,12 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ConnectingAirportsOutlinedIcon from "@mui/icons-material/ConnectingAirportsOutlined";
 import SportsTennisOutlinedIcon from "@mui/icons-material/SportsTennisOutlined";
 import { ListResult } from "../representations/results";
+import { outlinedButtonStyle, textButtonStyle } from "../styles/commonStyles";
+import { useGetBusinesses } from "../queries/business";
 
 const LandingPage: React.FC = () => {
-  const [businessesData, setBusinessesData] = useState<ListResult<any>>(null);
-  const [isBusinessesDataLoading, setBusinessesDataLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/places/all-places"
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setBusinessesData(data);
-        setBusinessesDataLoading(false); // Set isLoading to false after data is fetched
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setBusinessesDataLoading(false); // Set isLoading to false on error as well
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { data: businessesData, isLoading: isBusinessesDataLoading } =
+    useGetBusinesses();
 
   // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -122,27 +103,14 @@ const LandingPage: React.FC = () => {
           <Box sx={{ position: "relative" }}>
             <Button
               variant="text"
-              sx={{
-                // backgroundColor: "black",
-                color: "white",
-                height: "50px",
-              }}
+              sx={textButtonStyle}
               onClick={() => navigate("/login")}
             >
               Log In
             </Button>
             <Button
               variant="outlined"
-              sx={{
-                border: "2px solid white",
-                borderRadius: "3px",
-                color: "white",
-                height: "50px",
-                "&:hover": {
-                  border: "2px solid white",
-                  borderRadius: "3px",
-                },
-              }}
+              sx={outlinedButtonStyle}
               onClick={() => navigate("/signup")}
             >
               Sign Up

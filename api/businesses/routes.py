@@ -15,7 +15,7 @@ def get_businesses():
         del business["password"]
         businesses.append(business)
 
-    return jsonify({"businesses": businesses}), 200
+    return jsonify({"data": businesses}), 200
 
 
 @app.post("/api/businesses/respond-follow-request")
