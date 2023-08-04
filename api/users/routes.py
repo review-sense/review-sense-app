@@ -40,6 +40,10 @@ def roles_required(*role_names):
     return decorator
 
 
+def authentificate(user_id):
+    session["user_id"] = user_id
+
+
 from businesses.routes import *
 from posts.routes import *
 
@@ -87,6 +91,7 @@ def register_user():
             "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
     config.DB_USERS.insert_one(new_user)
+    authentificate(new_user["_id"])
 
     return jsonify({"id": new_user["_id"], "email": new_user["email"]}), 200
 
@@ -103,7 +108,7 @@ def login_user():
     if not bcrypt.checkpw(password.encode(), user["password"]):
         return jsonify({"error": "Unathorized"}), 401
 
-    session["user_id"] = user["_id"]
+    authentificate(user["_id"])
 
     return jsonify({"id": user["_id"], "email": user["email"]}), 200
 
@@ -111,7 +116,7 @@ def login_user():
 @app.post("/api/user/logout")
 @login_required
 def logout_user():
-    session.pop("user_id")
+    session.clear()
     return jsonify({"success": True}), 200
 
 
