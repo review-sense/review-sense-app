@@ -47,9 +47,6 @@ const LandingPage: React.FC = () => {
     // onSearch(event.target.value);
   };
 
-  // const image = sampleIMG
-  console.log("daaataaa", { businessesData });
-
   return (
     <>
       <div
@@ -84,7 +81,7 @@ const LandingPage: React.FC = () => {
               backgroundPosition: "center",
               height: "100%",
               width: "100%",
-              filter: "brightness(0.7)",
+              filter: "brightness(0.9)",
               backgroundBlendMode: "multiply",
             }}
           />
@@ -156,14 +153,7 @@ const LandingPage: React.FC = () => {
           flexDirection: "column",
         }}
       >
-        <Tabs
-          variant="scrollable"
-          scrollButtons
-          allowScrollButtonsMobile
-          // value={value}
-          // onChange={handleChange}
-          // aria-label="icon label tabs example"
-        >
+        <Tabs variant="scrollable" scrollButtons allowScrollButtonsMobile>
           <Tab
             icon={<RestaurantMenuOutlinedIcon />}
             label="Eat Out"
