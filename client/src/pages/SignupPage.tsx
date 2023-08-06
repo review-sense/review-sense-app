@@ -5,26 +5,43 @@ import { usePostRegisterUser } from "../queries/users";
 
 const SignupPage = () => {
   const { mutateAsync: registerUserMutation } = usePostRegisterUser();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    console.log("Username:", username);
-    console.log("Password:", password);
+  const handleSignup = async () => {
+    setError("");
 
-    console.log(
-      "sending this",
-      JSON.stringify({
-        email: username,
+    // Basic email validation
+    if (!email || !email.includes("@")) {
+      setError("Please provide a valid email address.");
+      return;
+    }
+
+    // Password validation
+    if (!password || password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
+    // Confirm password validation
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await registerUserMutation({
+        email: email,
         password: password,
         role: "user",
-      })
-    );
-    await registerUserMutation({
-      email: username,
-      password: password,
-      role: "user",
-    });
+      });
+
+      console.log("User registered:", response);
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
   };
 
   return (
@@ -59,28 +76,13 @@ const SignupPage = () => {
           }}
         >
           <TextField
-            label="Username"
+            label="Email"
             variant="outlined"
             fullWidth
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             margin="normal"
-            sx={{
-              backgroundColor: "white",
-              "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderWidth: 3,
-                borderColor: "#3287e6",
-              },
-              "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "#3287e6",
-                },
-              "& .MuiInputLabel-root.Mui-focused ": { color: "#3287e6" },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "#3287e6",
-                },
-            }}
+            sx={textFieldStyle}
           />
           <TextField
             label="Password"
@@ -95,12 +97,18 @@ const SignupPage = () => {
           <TextField
             label="Confirm password"
             variant="outlined"
+            type="password"
             fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             margin="normal"
             sx={textFieldStyle}
           />
+          {error && (
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
           <Button
             variant="contained"
             sx={{
@@ -108,7 +116,7 @@ const SignupPage = () => {
               fontWeight: "bold",
             }}
             fullWidth
-            onClick={handleLogin}
+            onClick={handleSignup}
           >
             Sign up
           </Button>
@@ -117,4 +125,5 @@ const SignupPage = () => {
     </div>
   );
 };
+
 export default SignupPage;

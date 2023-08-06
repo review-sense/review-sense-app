@@ -1,15 +1,33 @@
 import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { filledButtonStyle, textFieldStyle } from "../styles/commonStyles";
+import { usePostLoginUser } from "../queries/users";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { mutateAsync: loginUserMutation } = usePostLoginUser();
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = () => {
-    // Handle login logic here
-    console.log("Username:", username);
-    console.log("Password:", password);
+  const handleLogin = async () => {
+    try {
+      const response = await loginUserMutation({
+        email: email,
+        password: password,
+      });
+
+      // Clear any previous error message
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error logging in user:", error);
+
+      // Handle unauthorized error
+      if (error.message === "Unauthorized") {
+        setErrorMessage("Incorrect username or password");
+      } else {
+        setErrorMessage("An error occurred while logging in");
+      }
+    }
   };
 
   return (
@@ -47,8 +65,8 @@ const LoginPage = () => {
             label="Username"
             variant="outlined"
             fullWidth
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             margin="normal"
             sx={textFieldStyle}
           />
@@ -62,6 +80,11 @@ const LoginPage = () => {
             margin="normal"
             sx={textFieldStyle}
           />
+          {errorMessage && (
+            <Typography color="error" variant="body2">
+              {errorMessage}
+            </Typography>
+          )}
           <Button
             variant="contained"
             sx={{
@@ -78,4 +101,5 @@ const LoginPage = () => {
     </div>
   );
 };
+
 export default LoginPage;
