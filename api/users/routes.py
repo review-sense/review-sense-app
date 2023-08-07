@@ -1,11 +1,17 @@
+import os
 import uuid
 from datetime import datetime
 from functools import wraps
 
 import bcrypt
+import boto3
 from app import app, server_session
 from config import config
 from flask import jsonify, request, session
+from utils.folder import clean_up_folder
+
+UPLOAD_FOLDER = "uploads"
+BUCKET = "engagesense-test"
 
 
 # Decorators
@@ -38,6 +44,10 @@ def roles_required(*role_names):
         return decorated_route
 
     return decorator
+
+
+def authentificate(user_id):
+    session["user_id"] = user_id
 
 
 from businesses.routes import *
@@ -74,9 +84,14 @@ def register_user():
             "email": email,
             "password": hashed_password,
             "role": role,
-            "title": "",
-            "description": "",
             "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "name": "",
+            "type": "",
+            "description": "",
+            "image": "https://engagesense-test.s3.amazonaws.com/uploads/default-business.png",
+            "rating": 0,
+            "address": "",
+            "hours": "",
         }
     else:
         new_user = {
@@ -85,8 +100,10 @@ def register_user():
             "password": hashed_password,
             "role": role,
             "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "image": "https://engagesense-test.s3.amazonaws.com/uploads/default-user.png",
         }
     config.DB_USERS.insert_one(new_user)
+    authentificate(new_user["_id"])
 
     return jsonify({"id": new_user["_id"], "email": new_user["email"]}), 200
 
@@ -103,7 +120,7 @@ def login_user():
     if not bcrypt.checkpw(password.encode(), user["password"]):
         return jsonify({"error": "Unathorized"}), 401
 
-    session["user_id"] = user["_id"]
+    authentificate(user["_id"])
 
     return jsonify({"id": user["_id"], "email": user["email"]}), 200
 
@@ -111,7 +128,7 @@ def login_user():
 @app.post("/api/user/logout")
 @login_required
 def logout_user():
-    session.pop("user_id")
+    session.clear()
     return jsonify({"success": True}), 200
 
 
@@ -150,3 +167,25 @@ def follow_business():
         )
 
     return jsonify({"success": True}), 200
+
+
+@app.post("/api/users/upload-profile-image")
+@login_required
+def upload():
+    f = request.files["file"]
+
+    clean_up_folder(UPLOAD_FOLDER)
+
+    f.save(os.path.join(UPLOAD_FOLDER, f.filename))
+    object_name = UPLOAD_FOLDER + "/" + f.filename
+    s3_client = boto3.client("s3")
+    response = s3_client.upload_file(object_name, BUCKET, object_name)
+
+    # Construct and return the public URL of the uploaded image
+    public_url = f"https://{BUCKET}.s3.amazonaws.com/{object_name}"
+
+    config.DB_USERS.update_one(
+        {"_id": session["user_id"]}, {"$set": {"image": public_url}}
+    )
+
+    return jsonify({"sucess": True}), 200

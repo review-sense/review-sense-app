@@ -36,15 +36,12 @@ const LandingPage: React.FC = () => {
   const { data: businessesData, isLoading: isBusinessesDataLoading } =
     useGetBusinesses();
 
-  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
-    // onSearch(event.target.value);
   };
 
   return (

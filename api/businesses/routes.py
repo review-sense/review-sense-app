@@ -13,6 +13,8 @@ def get_businesses():
             for post in config.DB_POSTS.find({"business_id": {"$eq": business["_id"]}})
         ]
         del business["password"]
+        del business["email"]
+        del business["role"]
         businesses.append(business)
 
     return jsonify({"data": businesses}), 200
