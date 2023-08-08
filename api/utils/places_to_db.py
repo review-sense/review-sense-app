@@ -4,7 +4,7 @@ from datetime import datetime
 # from config import config
 from pymongo import MongoClient
 
-client = MongoClient(config.MONGO_DB_LOCAL)
+client = MongoClient("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.1")
 
 import bcrypt
 
