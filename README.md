@@ -39,7 +39,7 @@ AWS_SECRET_ACCESS_KEY=""
 (for MacOS)
 - ask dev lead for `certificates` folder
 - once downloaded place it inside `api` folder
-- open `certificates` folder, the following window will pop up:
+- open `certificates` folder, open `cert.pem` the following window will pop up:
 <img width="538" alt="Screenshot 2023-08-08 at 8 40 53 PM" src="https://github.com/review-sense/review-sense-app/assets/100636075/9b306ec2-f638-467a-a5fa-e0340e2cea43">
 
 - choose `System` for Keychain and click add
