@@ -15,3 +15,26 @@ export const outlinedButtonStyle: CSSObject = {
     borderRadius: "3px",
   },
 };
+
+export const filledButtonStyle: CSSObject = {
+  backgroundColor: "#488afa",
+  "&:hover": {
+    backgroundColor: "#488afa",
+  },
+  mt: "15px",
+};
+
+export const textFieldStyle: CSSObject = {
+  backgroundColor: "white",
+  "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+    borderWidth: 3,
+    borderColor: "#488afa",
+  },
+  "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#488afa",
+  },
+  "& .MuiInputLabel-root.Mui-focused ": { color: "#488afa" },
+  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#488afa",
+  },
+};

@@ -165,5 +165,6 @@ cython_debug/
 .vscode/
 .env.development
 flask_session/
+uploads/
 certificates/
 .DS_Store

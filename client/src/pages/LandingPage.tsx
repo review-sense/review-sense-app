@@ -78,7 +78,7 @@ const LandingPage: React.FC = () => {
               backgroundPosition: "center",
               height: "100%",
               width: "100%",
-              filter: "brightness(0.7)",
+              filter: "brightness(0.9)",
               backgroundBlendMode: "multiply",
             }}
           />
@@ -92,9 +92,9 @@ const LandingPage: React.FC = () => {
             // sx={{ flexGrow: 1, color: "black" }}
             sx={{ position: "relative", color: "white" }}
           >
-            Logo
+            EngageSense
           </Typography>
-          <Box sx={{ position: "relative" }}>
+          <Box sx={{ position: "relative", mb: "100px" }}>
             <Button
               variant="text"
               sx={textButtonStyle}
@@ -112,7 +112,7 @@ const LandingPage: React.FC = () => {
           </Box>
         </Box>
         {/* <h5> Earn cash for engaging with your favourite business!</h5> */}
-        <TextField
+        {/* <TextField
           // label="Search"
           variant="outlined"
           value={searchQuery}
@@ -131,7 +131,7 @@ const LandingPage: React.FC = () => {
               },
             },
           }}
-        />
+        /> */}
         <Typography
           variant="h4"
           component="h1"
@@ -150,14 +150,7 @@ const LandingPage: React.FC = () => {
           flexDirection: "column",
         }}
       >
-        <Tabs
-          variant="scrollable"
-          scrollButtons
-          allowScrollButtonsMobile
-          // value={value}
-          // onChange={handleChange}
-          // aria-label="icon label tabs example"
-        >
+        {/* <Tabs variant="scrollable" scrollButtons allowScrollButtonsMobile>
           <Tab
             icon={<RestaurantMenuOutlinedIcon />}
             label="Eat Out"
@@ -205,8 +198,8 @@ const LandingPage: React.FC = () => {
             sx={{ color: "#f23f60" }}
           />
 
-          {/* <Tab icon={<PersonPinIcon />} label="NEARBY" /> */}
-        </Tabs>
+          { <Tab icon={<PersonPinIcon />} label="NEARBY" /> }
+        </Tabs> */}
 
         <Box
           sx={{
