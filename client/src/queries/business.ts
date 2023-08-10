@@ -6,9 +6,7 @@ export const useGetBusinesses = (
   queryConfig?
 ): QueryObserverResult<ListResult<any>> => {
   return useQuery<ListResult<any>, Error>("businesses", async () => {
-    const response = await fetch(
-      "https://localhost:8000/api/businesses/all-businesses"
-    );
+    const response = await fetch(apis.getBusinesses);
     return response.json();
   });
 };

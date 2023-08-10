@@ -8,7 +8,7 @@ export const usePostRegisterUser =
     const queryClient = useQueryClient();
     return useMutation<UserRepresentation>(
       (params: any) =>
-        fetch("http://127.0.0.1:8000/api/user/register", {
+        fetch(apis.registerUser, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -25,7 +25,7 @@ export const usePostLoginUser = (): UseMutationResult<
   const queryClient = useQueryClient();
   return useMutation<UserRepresentation | GenericError, GenericError>(
     (params: any) =>
-      fetch("http://127.0.0.1:8000/api/user/login", {
+      fetch(apis.loginUser, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
