@@ -13,10 +13,15 @@ import {
   Tab,
   TextField,
   Button,
+  Avatar,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import sampleIMG from "../mock_data/images/doge-meme-22.jpg";
 import backIMG from "../mock_data/images/websback.jpg";
+import businessIMG from "../mock_data/images/cookingpal.jpg";
+import businessLOGO from "../mock_data/images/cooklogo.jpg";
+import businessIMG2 from "../mock_data/images/cycleboard.jpg";
+import businessLOGO2 from "../mock_data/images/cyclelogo.jpg";
 import MenuIcon from "@material-ui/icons/Menu";
 import { useNavigate } from "react-router-dom";
 import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
@@ -45,29 +50,37 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <>
+    <div
+      style={{
+        // display: "flex",
+        background: "#f2f2f2",
+        overflowY: "auto",
+        height: "100vh",
+        padding: "20px",
+      }}
+    >
       <div
         style={{
           backgroundColor: "white",
           backgroundSize: "cover",
           position: "relative",
           userSelect: "none",
-          // color: "white",
           paddingTop: "20px",
           paddingLeft: "50px",
           paddingBottom: "10px",
           paddingRight: "50px",
+          borderRadius: "32px",
+          overflow: "hidden",
         }}
       >
         <div
           style={{
             position: "absolute",
-            filter: "brightness(0.7)",
+            filter: "brightness(0.6)",
             top: "0",
             right: "0",
             bottom: "0",
             left: "0",
-            // padding: "20px",
           }}
         >
           <div
@@ -78,13 +91,13 @@ const LandingPage: React.FC = () => {
               backgroundPosition: "center",
               height: "100%",
               width: "100%",
-              filter: "brightness(0.9)",
+              // filter: "brightness(0.9)",
               backgroundBlendMode: "multiply",
             }}
           />
         </div>
         <Box
-          sx={{ display: "flex", justifyContent: "space-between", mb: "15px" }}
+          sx={{ display: "flex", justifyContent: "space-between", mb: "150px" }}
         >
           <Typography
             variant="h6"
@@ -94,7 +107,8 @@ const LandingPage: React.FC = () => {
           >
             EngageSense
           </Typography>
-          <Box sx={{ position: "relative", mb: "100px" }}>
+          {/* TODO: uncomment when implementing login and signup */}
+          {/* <Box sx={{ position: "relative", mb: "100px" }}>
             <Button
               variant="text"
               sx={textButtonStyle}
@@ -109,9 +123,9 @@ const LandingPage: React.FC = () => {
             >
               Sign Up
             </Button>
-          </Box>
+          </Box> */}
         </Box>
-        {/* <h5> Earn cash for engaging with your favourite business!</h5> */}
+        {/* TODO: uncomment when implemlementing search bar */}
         {/* <TextField
           // label="Search"
           variant="outlined"
@@ -142,14 +156,15 @@ const LandingPage: React.FC = () => {
         </Typography>
       </div>
 
-      <Container
+      <Box
         sx={{
           py: 4,
-          paddingLeft: "0",
+          // paddingLeft: "0",
           display: "flex",
           flexDirection: "column",
         }}
       >
+        {/* TODO: uncomment when implemlementing business categories */}
         {/* <Tabs variant="scrollable" scrollButtons allowScrollButtonsMobile>
           <Tab
             icon={<RestaurantMenuOutlinedIcon />}
@@ -210,12 +225,184 @@ const LandingPage: React.FC = () => {
         >
           <Typography
             variant="body2"
-            color="text.secondary"
+            color="#488afa"
             sx={{ paddingLeft: "20px" }}
           >
             Suggested Businesses
           </Typography>
+          <Box
+            style={{
+              position: "relative",
+              zIndex: "2",
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: "1",
+              padding: "24px 24px 24px",
+              backgroundColor: "white",
+              borderRadius: "32px 32px 32px 32px",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3,minmax(0,1fr))",
+                gap: "10px",
+              }}
+            >
+              {
+                !isBusinessesDataLoading && (
+                  <>
+                    {/* businessesData.data.map((business) => ( */}
+                    <Box
+                      sx={{
+                        position: "relative",
+                        display: "flex",
+                        flexFlow: "column nowrap",
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          overflow: "hidden",
+                          backgroundColor: "#f2f2f2",
+                          borderRadius: "18px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            minHeight: "200px",
+                            padding: "10px 10px 10px",
+                            backgroundImage: `url(${businessIMG})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundBlendMode: "multiply",
+                          }}
+                        >
+                          <Avatar
+                            alt="Business Logo"
+                            src={businessLOGO}
+                            sx={{
+                              position: "relative",
+                              height: "auto",
+                              border: "15px solid white",
+                              width: "40%",
+                              aspectRatio: "1/1",
+                            }}
+                          />
+                        </div>
 
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            padding: "15px",
+                            // justifyContent: "center",
+                            // alignItems: "center",
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            component="div"
+                            color="#488afa"
+                            sx={{ mb: 0 }}
+                          >
+                            CookingPal
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 0 }}
+                          >
+                            Cooking Supplies
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                    {/* next card */}
+
+                    <Box
+                      sx={{
+                        position: "relative",
+                        display: "flex",
+                        flexFlow: "column nowrap",
+                        width: "100%",
+                        height: "100%",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          position: "relative",
+                          overflow: "hidden",
+                          backgroundColor: "#f2f2f2",
+                          borderRadius: "18px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            minHeight: "200px",
+                            padding: "10px 10px 10px",
+                            backgroundImage: `url(${businessIMG2})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundBlendMode: "multiply",
+                          }}
+                        >
+                          <Avatar
+                            alt="Business Logo"
+                            src={businessLOGO2}
+                            sx={{
+                              height: "auto",
+                              border: "15px solid white",
+                              width: "40%",
+                              aspectRatio: "1/1",
+                            }}
+                          />
+                        </div>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            padding: "15px",
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            component="div"
+                            color="#488afa"
+                            sx={{ mb: 0 }}
+                          >
+                            CycleBoard
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 0 }}
+                          >
+                            Electric Scooters
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </>
+                )
+                // ))
+              }
+            </div>
+          </Box>
           {!isBusinessesDataLoading &&
             businessesData.data.map((business) => (
               <Grid key={business.id}>
@@ -274,10 +461,10 @@ const LandingPage: React.FC = () => {
               </Grid>
             ))}
         </Box>
-      </Container>
+      </Box>
 
       {/* <Container> Add the map component for Vancouver here </Container> */}
-    </>
+    </div>
   );
 };
 export default LandingPage;

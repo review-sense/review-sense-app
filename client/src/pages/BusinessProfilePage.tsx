@@ -2,9 +2,9 @@ import React from "react";
 import { Box, Typography, Avatar, Grid, Rating, Button } from "@mui/material";
 import { outlinedButtonStyle, textButtonStyle } from "../styles/commonStyles";
 import businessIMG from "../mock_data/images/busimg.jpg";
+import businessLOGO from "../mock_data/images/cooklogo.jpg";
 
 const BusinessProfilePage: React.FC = () => {
-  const logoUrl = "/path/to/logo.png";
   const followers = 500;
   const users = 1000;
   const topUsers = 5;
@@ -157,31 +157,12 @@ const BusinessProfilePage: React.FC = () => {
           >
             <Avatar
               alt="Business Logo"
-              src={logoUrl}
-              sx={{ width: 200, height: 200 }}
+              src={businessLOGO}
+              sx={{ width: 200, height: 200, border: "15px solid white" }}
             />
           </Box>
         </Box>
       </div>
-
-      <Box mt={2}>
-        <Typography variant="body1">Followers: {followers}</Typography>
-        <Typography variant="body1">Users: {users}</Typography>
-        <Typography variant="body1">Top Users: {topUsers}</Typography>
-      </Box>
-
-      <Box mt={2}>
-        <Rating
-          name="business-rating"
-          value={rating}
-          precision={0.5}
-          readOnly
-        />
-      </Box>
-
-      <Box mt={2}>
-        <Typography variant="body1">{description}</Typography>
-      </Box>
     </Box>
   );
 };

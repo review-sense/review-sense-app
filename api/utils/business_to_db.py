@@ -23,9 +23,9 @@ email2 = "business2@example.com"
 users.insert_one(
     {
         "_id": uuid.uuid4().hex,
-        "name": "As'salam Restaurant",
+        "name": "CookingPal",
         "type": "Cafe / Restaurants",
-        "description": "Description for Business 1",
+        "description": "Cooking Supplies",
         "image": "business1.jpg",
         "rating": 2.5,
         "address": "783, Sheikh Zayed Road, Al Barsha 1, Hadaeq Mohammed Bin Rashid, Dubai",
@@ -39,9 +39,9 @@ users.insert_one(
 users.insert_one(
     {
         "_id": uuid.uuid4().hex,
-        "name": "Diamond Avenue",
+        "name": "Sewing Machines",
         "type": "Jewerly store",
-        "description": "Description for Business 2",
+        "description": "Sevwing Machines",
         "image": "business2.jpg",
         "rating": 4.1,
         "address": "70, Sheikh Mohammed Bin Zayed Road, Mirdif, Mushraif, Dubai",

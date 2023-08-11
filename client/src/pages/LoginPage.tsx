@@ -34,7 +34,7 @@ const LoginPage = () => {
     <div
       style={{
         display: "flex",
-        background: "#f2f7ff",
+        background: "#f2f2f2",
         overflowY: "auto",
         height: "100vh",
       }}
