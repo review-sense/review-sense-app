@@ -4,7 +4,7 @@ from datetime import datetime
 # from config import config
 from pymongo import MongoClient
 
-client = MongoClient(config.MONGO_DB_LOCAL)
+client = MongoClient("MONGO_DB_LOCAL")
 
 import bcrypt
 

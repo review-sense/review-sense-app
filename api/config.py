@@ -1,4 +1,5 @@
 import os
+import ssl
 
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -26,6 +27,11 @@ class Config:
     DB_POSTS = MongoClient(MONGO_DB_LOCAL).engage_sense.posts
     DB_BUSINESSES = MongoClient(MONGO_DB_LOCAL).engage_sense.businesses
     DB_COMMENTS = MongoClient(MONGO_DB_LOCAL).engage_sense.comments
+
+    SSL_CONTEXT = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    SSL_CONTEXT.load_cert_chain(
+        certfile="certificates/cert.pem", keyfile="certificates/key.pem"
+    )
 
 
 config = Config()
