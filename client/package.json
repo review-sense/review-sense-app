@@ -44,5 +44,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "start": "HTTPS=true SSL_CRT_FILE=../api/certificates/cert.pem SSL_KEY_FILE=../api/certificates/key.pem react-scripts start"
 }
