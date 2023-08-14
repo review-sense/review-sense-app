@@ -1,7 +1,7 @@
 // import { Box } from "@mui/material";
 import React from "react";
 import { DefaultOptions, QueryClient, QueryClientProvider } from "react-query";
-import LandingPage from "./pages/LandingPage";
+import MainPage from "./pages/MainPage";
 
 const App = () => {
   const defaultQueryClientOptions: DefaultOptions = {
@@ -12,7 +12,7 @@ const App = () => {
   });
   return (
     <QueryClientProvider client={queryClient}>
-      <LandingPage />
+      <MainPage />
     </QueryClientProvider>
   );
 };
