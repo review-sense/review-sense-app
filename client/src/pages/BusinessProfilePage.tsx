@@ -1,16 +1,10 @@
 import React from "react";
-import { Box, Typography, Avatar, Grid, Rating, Button } from "@mui/material";
-import { outlinedButtonStyle, textButtonStyle } from "../styles/commonStyles";
+import { Box, Typography, Avatar, Button } from "@mui/material";
+import { outlinedButtonStyle } from "../styles/commonStyles";
 import businessIMG from "../mock_data/images/busimg.jpg";
 import businessLOGO from "../mock_data/images/cooklogo.jpg";
 
 const BusinessProfilePage: React.FC = () => {
-  const followers = 500;
-  const users = 1000;
-  const topUsers = 5;
-  const rating = 4.5;
-  const description = "Your business slogan or short description goes here.";
-
   return (
     <Box>
       <div
@@ -51,9 +45,6 @@ const BusinessProfilePage: React.FC = () => {
         <Box
           sx={{
             display: "flex",
-            // flexDirection: "column",
-            // mb: "15px",
-            // mt: "15px",
           }}
         >
           <Box

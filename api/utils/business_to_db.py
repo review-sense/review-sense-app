@@ -34,6 +34,7 @@ users.insert_one(
         "email": email1,
         "password": hashed_password,
         "role": role,
+        "image": "https://engagesense-test.s3.amazonaws.com/uploads/default-business.png",
     },
 )
 users.insert_one(
