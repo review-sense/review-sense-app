@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { outlinedButtonStyle, textButtonStyle } from "../styles/commonStyles";
 import { useGetBusinesses } from "../queries/business";
 
-const LandingPage: React.FC = () => {
+const MainPage: React.FC = () => {
   const { data: businessesData, isLoading: isBusinessesDataLoading } =
     useGetBusinesses();
 
@@ -187,4 +187,4 @@ const LandingPage: React.FC = () => {
     </div>
   );
 };
-export default LandingPage;
+export default MainPage;
