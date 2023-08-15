@@ -19,8 +19,8 @@ const MainPage: React.FC = () => {
   useEffect(() => {
     // Configure AWS credentials
     AWS.config.update({
-      accessKeyId: "AKIA4WJT2OPPRZQTSXFI",
-      secretAccessKey: "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",
+      accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
       region: "ca-central-1",
     });
 
