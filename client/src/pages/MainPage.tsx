@@ -21,7 +21,7 @@ const MainPage: React.FC = () => {
     AWS.config.update({
       accessKeyId: "AKIA4WJT2OPPRZQTSXFI",
       secretAccessKey: "ldmebUAkfsbLtareKHEM7SG8gHoz0xC+S8i3NLKW",
-      region: "ca-central-1", // Change to your bucket's region
+      region: "ca-central-1",
     });
 
     // Create S3 instance
@@ -29,7 +29,7 @@ const MainPage: React.FC = () => {
 
     // Specify the S3 bucket and object key
     const bucketName = "engagesense-test";
-    const objectKey = "uploads/default-business.png"; // Change to your object's key
+    const objectKey = "uploads/default-business.png";
 
     // Fetch the image data
     s3.getObject({ Bucket: bucketName, Key: objectKey }, (err, data) => {
@@ -45,9 +45,6 @@ const MainPage: React.FC = () => {
       }
     });
   }, []);
-
-  const imageURL =
-    "https://engagesense-test.s3.amazonaws.com/uploads/default-business.png";
 
   return (
     <div
