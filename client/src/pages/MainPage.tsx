@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useGetBusinesses } from "../queries/business";
 import AWS from "aws-sdk";
 const MainPage: React.FC = () => {
-  const [imageDataList, setImageDataList] = useState<string[]>([]);
-  const [areBusinessImagesLoading, setAreBusinessImagesLoading] =
-    useState(true);
+  const [logoDataList, setLogoDataList] = useState<string[]>([]);
+  const [areLogosLoading, setAreLogosLoading] = useState(true);
   const { data: businessesData, isLoading: isBusinessesDataLoading } =
     useGetBusinesses();
 
@@ -27,7 +26,6 @@ const MainPage: React.FC = () => {
       // Create S3 instance
       const s3 = new AWS.S3();
 
-      // Fetch the image data
       const data = await s3
         .getObject({ Bucket: bucketName, Key: objectKey })
         .promise();
@@ -40,25 +38,25 @@ const MainPage: React.FC = () => {
 
       return `data:image/jpeg;base64,${imageBase64}`;
     } catch (error) {
-      console.error("Error fetching image:", error);
+      console.error("Error fetching logo:", error);
       return null;
     }
   };
 
   useEffect(() => {
     if (!isBusinessesDataLoading) {
-      const fetchImages = async () => {
-        const updatedImageDataList = await Promise.all(
+      const fetchLogos = async () => {
+        const updatedLogoDataList = await Promise.all(
           businessesData.data.map(async (business) => {
-            const imageData = await getImageFromS3(bucketName, business.image);
+            const imageData = await getImageFromS3(bucketName, business.logo);
             return imageData;
           })
         );
 
-        setImageDataList(updatedImageDataList);
-        setAreBusinessImagesLoading(false);
+        setLogoDataList(updatedLogoDataList);
+        setAreLogosLoading(false);
       };
-      fetchImages();
+      fetchLogos();
     }
   }, [businessesData, isBusinessesDataLoading]);
 
@@ -189,7 +187,7 @@ const MainPage: React.FC = () => {
               }}
             >
               {!isBusinessesDataLoading &&
-                !areBusinessImagesLoading &&
+                !areLogosLoading &&
                 businessesData.data.map((business, index) => (
                   <Box
                     key={index}
@@ -208,6 +206,7 @@ const MainPage: React.FC = () => {
                         overflow: "hidden",
                         backgroundColor: "#f2f2f2",
                         borderRadius: "18px",
+                        height: "100%",
                       }}
                     >
                       <div
@@ -217,7 +216,7 @@ const MainPage: React.FC = () => {
                           alignItems: "center",
                           minHeight: "200px",
                           padding: "10px 10px 10px",
-                          backgroundColor: "#2765cf",
+                          backgroundColor: "#5f8cd9",
                           backgroundRepeat: "no-repeat",
                           backgroundSize: "cover",
                           backgroundPosition: "center",
@@ -226,7 +225,7 @@ const MainPage: React.FC = () => {
                       >
                         <Avatar
                           alt="Business Logo"
-                          src={imageDataList[index]}
+                          src={logoDataList[index]}
                           sx={{
                             height: "auto",
                             border: "15px solid white",
@@ -256,7 +255,7 @@ const MainPage: React.FC = () => {
                           color="text.secondary"
                           sx={{ mb: 0 }}
                         >
-                          {business.description}
+                          {business.category}
                         </Typography>
                       </Box>
                     </Box>
