@@ -1,3 +1,4 @@
+import random
 import uuid
 from datetime import datetime
 
@@ -17,42 +18,43 @@ users = db.users
 password = "123"
 hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 role = "business"
-email1 = "business1@example.com"
-email2 = "business2@example.com"
+email = "business"
 
-users.insert_one(
+businesses = [
+    {"name": "Biktrix Bikes", "url": "biktrix.ca", "category": "e-Bikes"},
+    {"name": "AJ Madison", "url": "ajmadison.com", "category": "Appliances"},
+    {"name": "Acuva Tech", "url": "acuvatech.com", "category": "Electronics"},
+    {"name": "Multimac", "url": "multimac.com", "category": "Car Accessories"},
+    {"name": "Newell Brands", "url": "newellbrands.com", "category": "Car Accessories"},
+    {"name": "Dorel", "url": "doreleurope.com", "category": "Furniture"},
+    {"name": "Magna International", "url": "magna.com", "category": "Cars"},
+    {"name": "EMV Auto", "url": "emvauto.com", "category": "Cars (3 wheeled)"},
+    {"name": "Linamar", "url": "linamar.com", "category": "Car Accessories"},
     {
-        "_id": uuid.uuid4().hex,
-        "name": "CookingPal",
-        "type": "Cafe / Restaurants",
-        "description": "Cooking Supplies",
-        "image": "business1.jpg",
-        "rating": 2.5,
-        "address": "783, Sheikh Zayed Road, Al Barsha 1, Hadaeq Mohammed Bin Rashid, Dubai",
-        "hours": "Open",
-        "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "email": email1,
-        "password": hashed_password,
-        "role": role,
-        "image": "https://engagesense-test.s3.amazonaws.com/uploads/default-business.png",
+        "name": "East Wood Guitars",
+        "url": "eastwoodguitars.com",
+        "category": "Musical Instruments",
     },
-)
-users.insert_one(
-    {
-        "_id": uuid.uuid4().hex,
-        "name": "Sewing Machines",
-        "type": "Jewerly store",
-        "description": "Sevwing Machines",
-        "image": "business2.jpg",
-        "rating": 4.1,
-        "address": "70, Sheikh Mohammed Bin Zayed Road, Mirdif, Mushraif, Dubai",
-        "hours": "Open",
-        "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "email": email2,
-        "password": hashed_password,
-        "role": role,
-    },
-)
+]
 
-for user in users.find():
-    print(user)
+
+for i, business in enumerate(businesses):
+    users.insert_one(
+        {
+            "_id": uuid.uuid4().hex,
+            "name": business["name"],
+            "description": "Sevwing Machines",
+            "url": business["url"],
+            "category": business["category"],
+            "image": f"uploads/business{i+1}.jpg",
+            "rating": round(i * random.random(), 2),
+            "address": "",
+            "hours": "Open",
+            "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "email": email + f"{i+1}@example.com",
+            "password": hashed_password,
+            "role": role,
+        },
+    )
+
+print("Done")
