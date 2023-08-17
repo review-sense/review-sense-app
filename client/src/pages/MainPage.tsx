@@ -1,50 +1,66 @@
-import { Typography, Grid, Box, Rating, Avatar } from "@mui/material";
+import { Typography, Box, Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import sampleIMG from "../mock_data/images/doge-meme-22.jpg";
 import backIMG from "../mock_data/images/websback.jpg";
 import { useNavigate } from "react-router-dom";
 import { useGetBusinesses } from "../queries/business";
-import businessIMG from "../mock_data/images/cookingpal.jpg";
-import businessLOGO from "../mock_data/images/cooklogo.jpg";
-import businessIMG2 from "../mock_data/images/cycleboard.jpg";
-import businessLOGO2 from "../mock_data/images/cyclelogo.jpg";
 import AWS from "aws-sdk";
 const MainPage: React.FC = () => {
+  const [imageDataList, setImageDataList] = useState<string[]>([]);
+  const [areBusinessImagesLoading, setAreBusinessImagesLoading] =
+    useState(true);
   const { data: businessesData, isLoading: isBusinessesDataLoading } =
     useGetBusinesses();
 
   const navigate = useNavigate();
-  const [imageData, setImageData] = useState<string | null>(null);
+
+  const bucketName = "engagesense-test";
+
+  const getImageFromS3 = async (bucketName, objectKey) => {
+    try {
+      // Configure AWS credentials
+      AWS.config.update({
+        accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+        region: "ca-central-1",
+      });
+
+      // Create S3 instance
+      const s3 = new AWS.S3();
+
+      // Fetch the image data
+      const data = await s3
+        .getObject({ Bucket: bucketName, Key: objectKey })
+        .promise();
+
+      const uint8Array = new Uint8Array(data.Body as ArrayBuffer);
+      const byteArray = Array.from(uint8Array);
+      const imageBase64 = btoa(
+        byteArray.map((byte) => String.fromCharCode(byte)).join("")
+      );
+
+      return `data:image/jpeg;base64,${imageBase64}`;
+    } catch (error) {
+      console.error("Error fetching image:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
-    // Configure AWS credentials
-    AWS.config.update({
-      accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
-      region: "ca-central-1",
-    });
-
-    // Create S3 instance
-    const s3 = new AWS.S3();
-
-    // Specify the S3 bucket and object key
-    const bucketName = "engagesense-test";
-    const objectKey = "uploads/default-business.png";
-
-    // Fetch the image data
-    s3.getObject({ Bucket: bucketName, Key: objectKey }, (err, data) => {
-      if (err) {
-        console.error("Error fetching image:", err);
-      } else {
-        const uint8Array = new Uint8Array(data.Body as ArrayBuffer);
-        const byteArray = Array.from(uint8Array);
-        const imageBase64 = btoa(
-          byteArray.map((byte) => String.fromCharCode(byte)).join("")
+    if (!isBusinessesDataLoading) {
+      const fetchImages = async () => {
+        const updatedImageDataList = await Promise.all(
+          businessesData.data.map(async (business) => {
+            const imageData = await getImageFromS3(bucketName, business.image);
+            return imageData;
+          })
         );
-        setImageData(`data:image/jpeg;base64,${imageBase64}`);
-      }
-    });
-  }, []);
+
+        setImageDataList(updatedImageDataList);
+        setAreBusinessImagesLoading(false);
+      };
+      fetchImages();
+    }
+  }, [businessesData, isBusinessesDataLoading]);
 
   return (
     <div
@@ -55,10 +71,6 @@ const MainPage: React.FC = () => {
         padding: "20px",
       }}
     >
-      {/* <div>
-        <h2>Display Image using getObject</h2>
-        {imageData && <img src={imageData} alt="Displayed Image" />}
-      </div> */}
       <div
         style={{
           backgroundColor: "white",
@@ -134,11 +146,6 @@ const MainPage: React.FC = () => {
         </Typography>
       </div>
 
-      <div>
-        <h2>Display Image using getObject</h2>
-        {imageData && <img src={imageData} alt="Displayed Image" />}
-      </div>
-
       <Box
         sx={{
           py: 4,
@@ -181,214 +188,82 @@ const MainPage: React.FC = () => {
                 gap: "10px",
               }}
             >
-              {
-                !isBusinessesDataLoading && (
-                  <>
-                    {/* businessesData.data.map((business) => ( */}
+              {!isBusinessesDataLoading &&
+                !areBusinessImagesLoading &&
+                businessesData.data.map((business, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      position: "relative",
+                      display: "flex",
+                      flexFlow: "column nowrap",
+                      width: "100%",
+                      height: "100%",
+                      cursor: "pointer",
+                    }}
+                  >
                     <Box
                       sx={{
                         position: "relative",
-                        display: "flex",
-                        flexFlow: "column nowrap",
-                        width: "100%",
-                        height: "100%",
-                        cursor: "pointer",
+                        overflow: "hidden",
+                        backgroundColor: "#f2f2f2",
+                        borderRadius: "18px",
                       }}
                     >
-                      <Box
-                        sx={{
-                          position: "relative",
-                          overflow: "hidden",
-                          backgroundColor: "#f2f2f2",
-                          borderRadius: "18px",
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          minHeight: "200px",
+                          padding: "10px 10px 10px",
+                          backgroundColor: "#2765cf",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundBlendMode: "multiply",
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            minHeight: "200px",
-                            padding: "10px 10px 10px",
-                            backgroundImage: `url(${businessIMG2})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            backgroundBlendMode: "multiply",
-                          }}
-                        >
-                          <Avatar
-                            alt="Business Logo"
-                            src={businessLOGO2}
-                            sx={{
-                              height: "auto",
-                              border: "15px solid white",
-                              width: "40%",
-                              aspectRatio: "1/1",
-                            }}
-                          />
-                        </div>
-                        <Box
+                        <Avatar
+                          alt="Business Logo"
+                          src={imageDataList[index]}
                           sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            padding: "15px",
+                            height: "auto",
+                            border: "15px solid white",
+                            width: "40%",
+                            aspectRatio: "1/1",
                           }}
-                        >
-                          <Typography
-                            variant="h6"
-                            fontWeight="bold"
-                            component="div"
-                            color="#488afa"
-                            sx={{ mb: 0 }}
-                          >
-                            CycleBoard
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 0 }}
-                          >
-                            Electric Scooters
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                    {/* next card */}
-
-                    <Box
-                      sx={{
-                        position: "relative",
-                        display: "flex",
-                        flexFlow: "column nowrap",
-                        width: "100%",
-                        height: "100%",
-                        cursor: "pointer",
-                      }}
-                    >
+                        />
+                      </div>
                       <Box
                         sx={{
-                          position: "relative",
-                          overflow: "hidden",
-                          backgroundColor: "#f2f2f2",
-                          borderRadius: "18px",
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: "15px",
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            minHeight: "200px",
-                            padding: "10px 10px 10px",
-                            backgroundImage: `url(${businessIMG2})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            backgroundBlendMode: "multiply",
-                          }}
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          component="div"
+                          color="#488afa"
+                          sx={{ mb: 0 }}
                         >
-                          <Avatar
-                            alt="Business Logo"
-                            src={businessLOGO2}
-                            sx={{
-                              height: "auto",
-                              border: "15px solid white",
-                              width: "40%",
-                              aspectRatio: "1/1",
-                            }}
-                          />
-                        </div>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            padding: "15px",
-                          }}
+                          {business.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 0 }}
                         >
-                          <Typography
-                            variant="h6"
-                            fontWeight="bold"
-                            component="div"
-                            color="#488afa"
-                            sx={{ mb: 0 }}
-                          >
-                            CycleBoard
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 0 }}
-                          >
-                            Electric Scooters
-                          </Typography>
-                        </Box>
+                          {business.description}
+                        </Typography>
                       </Box>
                     </Box>
-                  </>
-                )
-                // ))
-              }
+                  </Box>
+                ))}
             </div>
           </Box>
-
-          {!isBusinessesDataLoading &&
-            businessesData.data.map((business, index) => (
-              <Grid key={index}>
-                <Box
-                  sx={{
-                    padding: "16px 20px",
-                    boxShadow: "rgb(230, 230, 230) 0px -1px",
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
-                >
-                  <Box sx={{ paddingRight: "20px" }}>
-                    <Box
-                      sx={{
-                        width: "200px",
-                        maxHeight: "200px",
-                      }}
-                    >
-                      <img
-                        src={sampleIMG}
-                        alt="Uploaded"
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "100%",
-                          borderRadius: "6px",
-                        }}
-                      />
-                    </Box>
-                  </Box>
-
-                  <Box>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="div"
-                      sx={{ mb: 0 }}
-                    >
-                      {business.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {business.type}
-                    </Typography>
-                    <Rating
-                      name="half-rating-read"
-                      defaultValue={business.rating}
-                      precision={0.5}
-                      size="small"
-                      readOnly
-                    />
-                    <Typography variant="body2">{business.address}</Typography>
-                    <Typography variant="body2" color="green">
-                      {business.hours}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-            ))}
         </Box>
       </Box>
     </div>
