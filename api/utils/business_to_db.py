@@ -46,7 +46,7 @@ for i, business in enumerate(businesses):
             "description": "Sevwing Machines",
             "url": business["url"],
             "category": business["category"],
-            "image": f"uploads/business{i+1}.jpg",
+            "logo": f"uploads/business{i+1}.jpg",
             "rating": round(i * random.random(), 2),
             "address": "",
             "hours": "Open",
