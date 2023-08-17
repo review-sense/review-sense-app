@@ -89,7 +89,7 @@ def register_user():
             "description": "",
             "url": "",
             "category": "",
-            "image": "uploads/default-business.png",
+            "logo": "uploads/default-business.png",
             "rating": 0,
             "address": "",
             "hours": "",
@@ -101,7 +101,7 @@ def register_user():
             "password": hashed_password,
             "role": role,
             "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "image": "uploads/default-user.png",
+            "logo": "uploads/default-user.png",
         }
     config.DB_USERS.insert_one(new_user)
     authentificate(new_user["_id"])
