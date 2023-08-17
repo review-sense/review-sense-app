@@ -86,9 +86,10 @@ def register_user():
             "role": role,
             "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "name": "",
-            "type": "",
             "description": "",
-            "image": "https://engagesense-test.s3.amazonaws.com/uploads/default-business.png",
+            "url": "",
+            "category": "",
+            "logo": "uploads/default-business.png",
             "rating": 0,
             "address": "",
             "hours": "",
@@ -100,7 +101,7 @@ def register_user():
             "password": hashed_password,
             "role": role,
             "time_created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "image": "https://engagesense-test.s3.amazonaws.com/uploads/default-user.png",
+            "logo": "uploads/default-user.png",
         }
     config.DB_USERS.insert_one(new_user)
     authentificate(new_user["_id"])
@@ -182,7 +183,7 @@ def upload():
     response = s3_client.upload_file(object_name, BUCKET, object_name)
 
     # Construct and return the public URL of the uploaded image
-    public_url = f"https://{BUCKET}.s3.amazonaws.com/{object_name}"
+    public_url = object_name
 
     config.DB_USERS.update_one(
         {"_id": session["user_id"]}, {"$set": {"image": public_url}}
