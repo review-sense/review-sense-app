@@ -14,6 +14,7 @@ import { outlinedButtonStyle, textButtonStyle } from "../styles/commonStyles";
 import { useGetBusinesses } from "../queries/business";
 
 const MainPage: React.FC = () => {
+  const { isSmall } = useViewport();
   const { data: businessesData, isLoading: isBusinessesDataLoading } =
     useGetBusinesses();
 
