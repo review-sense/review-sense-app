@@ -5,7 +5,7 @@ from datetime import datetime
 # from config import config
 from pymongo import MongoClient
 
-client = MongoClient("MONGO_DB_LOCAL")
+client = MongoClient("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.1")
 
 import bcrypt
 
@@ -46,7 +46,7 @@ for i, business in enumerate(businesses):
             "description": "Sevwing Machines",
             "url": business["url"],
             "category": business["category"],
-            "logo": f"uploads/business{i+1}.jpg",
+            "logo": f"uploads/business{i+1}.png",
             "rating": round(i * random.random(), 2),
             "address": "",
             "hours": "Open",
