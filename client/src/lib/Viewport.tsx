@@ -1,4 +1,12 @@
-import { Dispatch, createContext } from "react";
+import React, {
+  Dispatch,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
+import _, { debounce } from "lodash";
+import { ViewportContextType } from "./enums";
 
 interface ViewportDimensions {
   height: number;
@@ -47,3 +55,61 @@ const calculateViewportSize = (currentState): ViewportProps => {
     isLarge: width >= ViewportBreackpoints.Medium,
   };
 };
+
+const viewportReducer = (
+  state: ViewportProps,
+  action: { type: ViewportContextType; data?: ViewportProps }
+) => {
+  switch (action.type) {
+    case ViewportContextType.UpdateState:
+      return { ...state, ...action.data };
+    default:
+      return state;
+  }
+};
+
+export const ViewportProvider = ({ children }) => {
+  const [state, viewportDispatcher] = useReducer(
+    viewportReducer,
+    initialViewportProps
+  );
+  useEffect(() => {
+    const myViewport = calculateViewportSize(state);
+    if (!_.isEqual(myViewport, state)) {
+      viewportDispatcher({
+        type: ViewportContextType.UpdateState,
+        data: myViewport,
+      });
+    }
+  }, []);
+  useEffect(() => {
+    const handleViewportChange = debounce((): void => {
+      const myViewport = calculateViewportSize(state);
+      if (!_.isEqual(myViewport, state)) {
+        viewportDispatcher({
+          type: ViewportContextType.UpdateState,
+          data: myViewport,
+        });
+      }
+    }, 100);
+
+    //on app mount set app Viewport size change handler
+    window.addEventListener("resize", handleViewportChange);
+
+    return () => {
+      //remove handler on unpunt
+      window.removeEventListener("resize", handleViewportChange);
+    };
+  });
+
+  return (
+    <ViewportContext.Provider value={{ ...state, viewportDispatcher }}>
+      {children}
+    </ViewportContext.Provider>
+  );
+};
+
+export const useViewport = (): ViewportContextInterface => {
+  return useContext<ViewportContextInterface>(ViewportContext);
+};
+export default ViewportContext;
