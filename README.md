@@ -35,7 +35,14 @@ AWS_ACCESS_KEY_ID=""
 AWS_SECRET_ACCESS_KEY=""
 ```
 
-4. Set Up SSL Certificate
+4. In the client/ folder create .env.developement file 
+
+```
+REACT_APP_AWS_ACCESS_KEY_ID=""
+REACT_APP_AWS_SECRET_ACCESS_KEY=""
+```
+
+5. Set Up SSL Certificate
 (for MacOS)
 - ask dev lead for `certificates` folder
 - once downloaded place it inside `api` folder
