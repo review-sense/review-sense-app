@@ -1,23 +1,64 @@
-import {
-  Typography,
-  Container,
-  Grid,
-  Box,
-  Rating,
-  Button,
-} from "@mui/material";
-import React from "react";
-import sampleIMG from "../mock_data/images/doge-meme-22.jpg";
+import { Typography, Box, Avatar } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import backIMG from "../mock_data/images/websback.jpg";
 import { useNavigate } from "react-router-dom";
-import { outlinedButtonStyle, textButtonStyle } from "../styles/commonStyles";
 import { useGetBusinesses } from "../queries/business";
-
+import AWS from "aws-sdk";
 const MainPage: React.FC = () => {
+  const [logoDataList, setLogoDataList] = useState<string[]>([]);
+  const [areLogosLoading, setAreLogosLoading] = useState(true);
   const { data: businessesData, isLoading: isBusinessesDataLoading } =
     useGetBusinesses();
 
   const navigate = useNavigate();
+
+  const bucketName = "engagesense-test";
+
+  const getImageFromS3 = async (bucketName, objectKey) => {
+    try {
+      // Configure AWS credentials
+      AWS.config.update({
+        accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+        region: "ca-central-1",
+      });
+
+      // Create S3 instance
+      const s3 = new AWS.S3();
+
+      const data = await s3
+        .getObject({ Bucket: bucketName, Key: objectKey })
+        .promise();
+
+      const uint8Array = new Uint8Array(data.Body as ArrayBuffer);
+      const byteArray = Array.from(uint8Array);
+      const imageBase64 = btoa(
+        byteArray.map((byte) => String.fromCharCode(byte)).join("")
+      );
+
+      return `data:image/jpeg;base64,${imageBase64}`;
+    } catch (error) {
+      console.error("Error fetching logo:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (!isBusinessesDataLoading) {
+      const fetchLogos = async () => {
+        const updatedLogoDataList = await Promise.all(
+          businessesData.data.map(async (business) => {
+            const imageData = await getImageFromS3(bucketName, business.logo);
+            return imageData;
+          })
+        );
+
+        setLogoDataList(updatedLogoDataList);
+        setAreLogosLoading(false);
+      };
+      fetchLogos();
+    }
+  }, [businessesData, isBusinessesDataLoading]);
 
   return (
     <div
@@ -70,7 +111,6 @@ const MainPage: React.FC = () => {
           <Typography
             variant="h6"
             component="div"
-            // sx={{ flexGrow: 1, color: "black" }}
             sx={{ position: "relative", color: "white" }}
           >
             EngageSense
@@ -93,6 +133,7 @@ const MainPage: React.FC = () => {
             </Button>
           </Box> */}
         </Box>
+
         <Typography
           variant="h4"
           component="h1"
@@ -106,6 +147,7 @@ const MainPage: React.FC = () => {
       <Box
         sx={{
           py: 4,
+          paddingLeft: "0",
           display: "flex",
           flexDirection: "column",
         }}
@@ -125,63 +167,102 @@ const MainPage: React.FC = () => {
             Suggested Businesses
           </Typography>
 
-          {!isBusinessesDataLoading &&
-            businessesData.data.map((business, index) => (
-              <Grid key={index}>
-                <Box
-                  sx={{
-                    padding: "16px 20px",
-                    boxShadow: "rgb(230, 230, 230) 0px -1px",
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
-                >
-                  <Box sx={{ paddingRight: "20px" }}>
+          <Box
+            style={{
+              position: "relative",
+              zIndex: "2",
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: "1",
+              padding: "24px 24px 24px",
+              backgroundColor: "white",
+              borderRadius: "32px 32px 32px 32px",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3,minmax(0,1fr))",
+                gap: "10px",
+              }}
+            >
+              {!isBusinessesDataLoading &&
+                !areLogosLoading &&
+                businessesData.data.map((business, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      position: "relative",
+                      display: "flex",
+                      flexFlow: "column nowrap",
+                      width: "100%",
+                      height: "100%",
+                      cursor: "pointer",
+                    }}
+                  >
                     <Box
                       sx={{
-                        width: "200px",
-                        maxHeight: "200px",
+                        position: "relative",
+                        overflow: "hidden",
+                        backgroundColor: "#f2f2f2",
+                        borderRadius: "18px",
+                        height: "100%",
                       }}
                     >
-                      <img
-                        src={sampleIMG}
-                        alt="Uploaded"
+                      <div
                         style={{
-                          maxWidth: "100%",
-                          maxHeight: "100%",
-                          borderRadius: "6px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          minHeight: "200px",
+                          padding: "10px 10px 10px",
+                          backgroundColor: "#5f8cd9",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundBlendMode: "multiply",
                         }}
-                      />
+                      >
+                        <Avatar
+                          alt="Business Logo"
+                          src={logoDataList[index]}
+                          sx={{
+                            height: "auto",
+                            border: "15px solid white",
+                            width: "40%",
+                            aspectRatio: "1/1",
+                          }}
+                        />
+                      </div>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: "15px",
+                        }}
+                      >
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          component="div"
+                          color="#488afa"
+                          sx={{ mb: 0 }}
+                        >
+                          {business.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 0 }}
+                        >
+                          {business.category}
+                        </Typography>
+                      </Box>
                     </Box>
                   </Box>
-
-                  <Box>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="div"
-                      sx={{ mb: 0 }}
-                    >
-                      {business.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {business.type}
-                    </Typography>
-                    <Rating
-                      name="half-rating-read"
-                      defaultValue={business.rating}
-                      precision={0.5}
-                      size="small"
-                      readOnly
-                    />
-                    <Typography variant="body2">{business.address}</Typography>
-                    <Typography variant="body2" color="green">
-                      {business.hours}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-            ))}
+                ))}
+            </div>
+          </Box>
         </Box>
       </Box>
     </div>

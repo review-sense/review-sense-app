@@ -2,10 +2,9 @@ import React from "react";
 import { Box, Typography, Avatar, Button } from "@mui/material";
 import { outlinedButtonStyle } from "../styles/commonStyles";
 import businessIMG from "../mock_data/images/busimg.jpg";
+import businessLOGO from "../mock_data/images/cooklogo.jpg";
 
 const BusinessProfilePage: React.FC = () => {
-  const logoUrl = "/path/to/logo.png";
-
   return (
     <Box>
       <div
@@ -149,7 +148,7 @@ const BusinessProfilePage: React.FC = () => {
           >
             <Avatar
               alt="Business Logo"
-              src={logoUrl}
+              src={businessLOGO}
               sx={{ width: 200, height: 200, border: "15px solid white" }}
             />
           </Box>
