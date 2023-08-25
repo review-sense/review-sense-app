@@ -5,3 +5,9 @@ export enum ViewportContextType {
   //   Hide = "Hide",
   UpdateState = "UpdateState",
 }
+
+export enum ProviderType {
+  SecurityProvider = "SecurityProvider",
+  ViewportProvider = "ViewportProvider",
+  QueryClientProvider = "QueryClientProvider",
+}

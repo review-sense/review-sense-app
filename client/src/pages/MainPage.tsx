@@ -7,7 +7,6 @@ import AWS from "aws-sdk";
 const MainPage: React.FC = () => {
   const [logoDataList, setLogoDataList] = useState<string[]>([]);
   const [areLogosLoading, setAreLogosLoading] = useState(true);
-  const { isSmall } = useViewport();
   const { data: businessesData, isLoading: isBusinessesDataLoading } =
     useGetBusinesses();
 
