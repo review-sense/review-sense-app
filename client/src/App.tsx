@@ -2,18 +2,13 @@
 import React from "react";
 import { DefaultOptions, QueryClient, QueryClientProvider } from "react-query";
 import MainPage from "./pages/MainPage";
+import { EngageSenseProviders } from "./lib/EngageSenseProviders";
 
 const App = () => {
-  const defaultQueryClientOptions: DefaultOptions = {
-    queries: { staleTime: 600000 },
-  };
-  const queryClient = new QueryClient({
-    defaultOptions: defaultQueryClientOptions,
-  });
   return (
-    <QueryClientProvider client={queryClient}>
+    <EngageSenseProviders additionalContext={[]}>
       <MainPage />
-    </QueryClientProvider>
+    </EngageSenseProviders>
   );
 };
 export default App;
