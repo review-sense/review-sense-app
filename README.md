@@ -50,17 +50,21 @@ REACT_APP_AWS_SECRET_ACCESS_KEY=""
 <img width="538" alt="Screenshot 2023-08-08 at 8 40 53 PM" src="https://github.com/review-sense/review-sense-app/assets/100636075/9b306ec2-f638-467a-a5fa-e0340e2cea43">
 
 - choose `System` for Keychain and click add
+- make sure the certificate is trusted by opening the certificate, expanding `Trust` section and choosing `Always trust` for all settings:
+<img width="506" alt="Screenshot 2023-09-11 at 5 38 57 PM" src="https://github.com/review-sense/review-sense-app/assets/100636075/c52fcc7c-e280-4437-92ce-6c55e9e298a3">
+
 - start backend server by typing `python app.py` in terminal (`api` folder)
 - after writing down the password the following will be prompted:
 ```
 Enter PEM pass phrase:
 ```
 - ask dev lead for pass phrase and type it there
-- the same prompt will be asked 4 times - use same pass phrase
+- the same prompt might be asked several times - use same pass phrase
 
 - after this api request should work - if not please restart your laptop
 
 DEBUG:
+- try adding the certificate to `login` Keychain
 - to make sure SSL certificate is connected to the server go to the localhost where server is run:
   ```
    * Running on https://127.0.0.1:8000
